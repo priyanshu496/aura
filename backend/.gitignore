@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+
+# Debug cache
+.vscode/
+*.swp
+
+# Dependency directories
+.pnpm
+.cache
+.next
+out/
+
+# Testing
+coverage/
+
+# MongoDB dump files
+dump/

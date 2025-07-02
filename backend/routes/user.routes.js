@@ -6,21 +6,21 @@ import * as authMiddleware from "../middlewares/auth.middleware.js";
 const userRouter = express.Router();
 
 userRouter.post(
-  "/register",
+  "/signup",
   body("email").isEmail().withMessage("Email must be valid email adress"),
   body("password")
     .isLength({ min: 3 })
     .withMessage("Password should be minimum 3 characters long"),
-  userController.userRegisterController
+  userController.userSignupController
 );
 
 userRouter.post(
-  "/login",
+  "/signin",
   body("email").isEmail().withMessage("Email must be valid email adress"),
   body("password")
     .isLength({ min: 3 })
     .withMessage("Password should be minimum 3 characters long"),
-  userController.userLoginController
+  userController.userSigninController
 );
 
 userRouter.get(
@@ -29,6 +29,6 @@ userRouter.get(
   userController.profileController
 );
 
-userRouter.get('/logout', authMiddleware.isUser, userController.userLogoutController)
+userRouter.get('/logout', authMiddleware.isUser, userController.userSignoutController)
 
 export default userRouter;

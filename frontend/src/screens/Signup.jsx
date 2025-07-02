@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "../config/axios.js";
 const Signup = () => {
@@ -100,7 +100,6 @@ const Signup = () => {
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               <span>Create Account</span>
-              <ArrowRight className="w-5 h-5" />
             </button>
           </div>
 

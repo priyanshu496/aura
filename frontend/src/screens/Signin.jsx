@@ -1,22 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import axios from "../config/axios.js";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/user.context.jsx";
 
 const Signin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post("/user/signin", {
+    axios
+      .post("/user/signin", {
         email,
         password,
       })
       .then((res) => {
         console.log(res.data);
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
         navigate("/");
       })
       .catch((err) => {

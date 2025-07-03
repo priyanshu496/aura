@@ -4,6 +4,7 @@ import dbconnect from "./db/db.js";
 import userRouter from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
 import cors from 'cors';
+import roomRouter from "./routes/room.routes.js";
 dbconnect();
 
 
@@ -24,6 +25,7 @@ App.use(cookieParser());
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use("/user", userRouter);
+App.use("/room", roomRouter);
 
 
 App.get("/", (req, res) => {

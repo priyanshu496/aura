@@ -1,7 +1,7 @@
 import express from "express";
 import * as userController from "../controllers/user.controller.js";
 import { body } from "express-validator";
-import * as authMiddleware from "../middlewares/auth.middleware.js";
+import  isUser from "../middlewares/auth.middleware.js";
 
 const userRouter = express.Router();
 
@@ -25,10 +25,10 @@ userRouter.post(
 
 userRouter.get(
   "/profile",
-  authMiddleware.isUser,
+  isUser,
   userController.profileController
 );
 
-userRouter.get('/logout', authMiddleware.isUser, userController.userSignoutController)
+userRouter.get('/logout', isUser, userController.userSignoutController)
 
 export default userRouter;

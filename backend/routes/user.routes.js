@@ -31,4 +31,7 @@ userRouter.get(
 
 userRouter.get('/logout', isUser, userController.userSignoutController)
 
+
+userRouter.get('/all', isUser, userController.getAllUsersController);
+
 export default userRouter;

@@ -1,72 +1,125 @@
-import roomModel from "../models/room.model.js";
-import { addUsersToRoom, createRoom, getAllRoomByUserId, getRoomById } from "../services/room.service.js";
-import { validationResult } from "express-validator";
+import roomModel from '../models/room.model.js';
+import * as roomService from '../services/room.service.js';
+import userModel from '../models/user.model.js';
+import { validationResult } from 'express-validator';
 
 
-export const createRoomController = async (req, res) => {
-  const errors = validationResult(req);
+export const createRoom = async (req, res) => {
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array });
-  }
+    const errors = validationResult(req);
 
-  try {
-    const { name } = req.body;
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-    //comming from jwt token
-    const userId = req.user.id;
+    try {
 
-    const newRoom = await createRoom({ name, userId });
+        const { name } = req.body;
+        const loggedInUser = await userModel.findOne({ email: req.user.email });
+        const userId = loggedInUser._id;
 
-    res.status(201).json(newRoom);
-  } catch (error) {
-    console.log(error);
+        const newRoom = await roomService.createRoom({ name, userId });
 
-    res.status(400).json({ error: error.message });
-  }
-};
+        res.status(201).json(newRoom);
 
-export const getAllRoomsController = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const allUserRooms = await getAllRoomByUserId({ userId: userId });
+    } catch (err) {
+        console.log(err);
+        res.status(400).send(err.message);
+    }
 
-    return res.status(200).json({ rooms: allUserRooms });
-  } catch (error) {
-    console.log(error);
-    res.status(400).send(error.message);
-  }
-};
 
-export const addUserToRoomController = async (req , res) => {
-  const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors: errors.array})
-  }
-  try {
-    const { roomId, users} = req.body
-    const userId = req.user.id;
 
-    const room =await addUsersToRoom({ roomId, users, userId: userId })
-
-    return res.status(200).json({
-      room
-    })
-
-  } catch (error) {
-    console.log(error)
-    res.status(400).json({error: error.message})
-  }
 }
 
+export const getAllRoom = async (req, res) => {
+    try {
 
-export const getRoomByIdController = async (req, res) => {
+        const loggedInUser = await userModel.findOne({
+            email: req.user.email
+        })
+
+        const allUserRooms = await roomService.getAllRoomByUserId({
+            userId: loggedInUser._id
+        })
+
+        return res.status(200).json({
+            rooms: allUserRooms
+        })
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ error: err.message })
+    }
+}
+
+export const addUserToRoom = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+
+        const { roomId, users } = req.body
+
+        const loggedInUser = await userModel.findOne({
+            email: req.user.email
+        })
+
+
+        const room = await roomService.addUsersToRoom({
+            roomId,
+            users,
+            userId: loggedInUser._id
+        })
+
+        return res.status(200).json({
+            room,
+        })
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ error: err.message })
+    }
+
+
+}
+
+export const getRoomById = async (req, res) => {
 
     const { roomId } = req.params;
 
     try {
 
-        const room = await getRoomById({ roomId });
+        const room = await roomService.getRoomById({ roomId });
+
+        return res.status(200).json({
+            room
+        })
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ error: err.message })
+    }
+
+}
+
+export const updateFileTree = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+
+        const { roomId, fileTree } = req.body;
+
+        const room = await roomService.updateFileTree({
+            roomId,
+            fileTree
+        })
 
         return res.status(200).json({
             room

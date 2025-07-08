@@ -1,36 +1,30 @@
-import express from "express";
-import morgan from "morgan";
-import dbconnect from "./db/db.js";
-import userRouter from "./routes/user.routes.js";
-import cookieParser from "cookie-parser";
+import express from 'express';
+import morgan from 'morgan';
+import connect from './db/db.js';
+import userRoutes from './routes/user.routes.js';
+import roomRoutes from './routes/room.routes.js';
+import aiRoutes from './routes/ai.routes.js';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import roomRouter from "./routes/room.routes.js";
-dbconnect();
+connect();
+
+
+const app = express();
+
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use('/user', userRoutes);
+app.use('/rooms', roomRoutes);
+app.use("/ai", aiRoutes)
 
 
 
-
-const App = express();
-
-App.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true, 
-  })
-);
-
-
-App.use(morgan("dev"));
-App.use(cookieParser());
-App.use(express.json());
-App.use(express.urlencoded({ extended: true }));
-App.use("/user", userRouter);
-App.use("/room", roomRouter);
-
-
-App.get("/", (req, res) => {
-  console.log("get req");
-  res.send("Hello from app");
+app.get('/', (req, res) => {
+    res.send('Hello World!');
 });
 
-export default App;
+export default app; 

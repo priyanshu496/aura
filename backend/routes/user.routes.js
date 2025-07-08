@@ -1,37 +1,29 @@
-import express from "express";
-import * as userController from "../controllers/user.controller.js";
-import { body } from "express-validator";
-import  isUser from "../middlewares/auth.middleware.js";
+import { Router } from 'express';
+import * as userController from '../controllers/user.controller.js';
+import { body } from 'express-validator';
+import * as authMiddleware from '../middleware/auth.middleware.js';
 
-const userRouter = express.Router();
-
-userRouter.post(
-  "/signup",
-  body("email").isEmail().withMessage("Email must be valid email adress"),
-  body("password")
-    .isLength({ min: 3 })
-    .withMessage("Password should be minimum 3 characters long"),
-  userController.userSignupController
-);
-
-userRouter.post(
-  "/signin",
-  body("email").isEmail().withMessage("Email must be valid email adress"),
-  body("password")
-    .isLength({ min: 3 })
-    .withMessage("Password should be minimum 3 characters long"),
-  userController.userSigninController
-);
-
-userRouter.get(
-  "/profile",
-  isUser,
-  userController.profileController
-);
-
-userRouter.get('/logout', isUser, userController.userSignoutController)
+const router = Router();
 
 
-userRouter.get('/all', isUser, userController.getAllUsersController);
 
-export default userRouter;
+router.post('/signup',
+    body('email').isEmail().withMessage('Email must be a valid email address'),
+    body('password').isLength({ min: 3 }).withMessage('Password must be at least 3 characters long'),
+    userController.userSignupController);
+
+router.post('/signin',
+    body('email').isEmail().withMessage('Email must be a valid email address'),
+    body('password').isLength({ min: 3 }).withMessage('Password must be at least 3 characters long'),
+    userController.userSigninController);
+
+router.get('/profile', authMiddleware.authUser, userController.profileController);
+
+
+router.get('/signout', authMiddleware.authUser, userController.userSigninController);
+
+
+router.get('/all', authMiddleware.authUser, userController.getAllUsersController);
+
+
+export default router;

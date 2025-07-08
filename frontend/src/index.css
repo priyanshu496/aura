@@ -1,1 +1,26 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Manufacturing+Consent&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&family=Merriweather&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&family=Poppins:wght@300;400;500;600;700&display=swap');
+*{
+    font-family: "Manufacturing Consent";
+    font-weight: 500;
+    font-style: normal;
+}
+
+.message-box, .users-list, .add-section{
+  scroll-behavior: smooth;
+}
+.message-box::-webkit-scrollbar{
+  display: none;
+}
+.users-list::-webkit-scrollbar{
+  display: none;
+}
+.add-section::-webkit-scrollbar{
+  display: none;
+}
+
+
+#logo{
+  font-family: "Montserrat";
+}

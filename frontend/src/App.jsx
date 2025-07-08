@@ -1,12 +1,13 @@
-import React from "react";
-import AppRoutes from "./routes/AppRoutes";
-import { Contexts } from "./context/user.context.jsx";
+import React from 'react'
+import AppRoutes from './routes/AppRoutes'
+import { UserProvider } from './context/user.context'
+
 const App = () => {
   return (
-    <Contexts.UserProvider >
+    <UserProvider>
       <AppRoutes />
-    </Contexts.UserProvider>
-  );
-};
+    </UserProvider>
+  )
+}
 
-export default App;
+export default App

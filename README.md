@@ -17,9 +17,8 @@ Users can create or join chat rooms, chat instantly with others, and interact wi
 
 ## Features
 - Room creation
-- Realtime chat
+- Real-time chat
 - Integrated AI
-- Responsive
 - Anonymity
 
 

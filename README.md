@@ -1,7 +1,7 @@
 
 # Aura
 
-Aura is a full-stack real-time chat application built with the MERN stack, Socket.IO, and Gemini AI.
+Aura is a full-stack real-time anonymous chat application built with the MERN stack, Socket.IO, and Gemini AI.
 Users can create or join chat rooms, chat instantly with others, and interact with Aura, an AI companion that can answer any query.
 
 
@@ -20,6 +20,7 @@ Users can create or join chat rooms, chat instantly with others, and interact wi
 - Realtime chat
 - Integrated AI
 - Responsive
+- Anonymity
 
 
 ## Environment Variables

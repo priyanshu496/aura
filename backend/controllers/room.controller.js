@@ -1,4 +1,3 @@
-import roomModel from '../models/room.model.js';
 import * as roomService from '../services/room.service.js';
 import userModel from '../models/user.model.js';
 import { validationResult } from 'express-validator';

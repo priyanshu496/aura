@@ -30,7 +30,6 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-950 to-black flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -right-20 sm:-top-40 sm:-right-40 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full filter blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-20 -left-20 sm:-bottom-40 sm:-left-40 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full filter blur-3xl animate-pulse"></div>
@@ -39,7 +38,6 @@ const Signup = () => {
 
       <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg">
         <div className="bg-zinc-900/60 backdrop-blur-2xl border border-blue-500/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80">
-          {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-300 bg-clip-text text-transparent mb-2 sm:mb-3">
               Create Account
@@ -50,7 +48,6 @@ const Signup = () => {
           </div>
 
           <div className="space-y-4 sm:space-y-6">
-            {/* Email Field */}
             <div className="space-y-2">
               <label className="text-xs sm:text-sm font-semibold text-blue-200">
                 Email
@@ -68,7 +65,6 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Password Field */}
             <div className="space-y-2">
               <label className="text-xs sm:text-sm font-semibold text-blue-200">
                 Password
@@ -97,7 +93,6 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               onClick={handleSubmit}
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
@@ -106,7 +101,6 @@ const Signup = () => {
             </button>
           </div>
 
-          {/* Sign In Link */}
           <div className="text-center mt-6 sm:mt-8">
             <p className="text-zinc-300 text-xs sm:text-sm lg:text-base">
               Already have an account?{" "}

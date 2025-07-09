@@ -43,21 +43,19 @@ const Home = () => {
 
   const handleSignout = () => {
     signout();
-    navigate("/signin")
+    navigate("/signin");
   };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-950 to-black relative overflow-hidden">
-      {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -right-20 sm:-top-40 sm:-right-40 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full filter blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-20 -left-20 sm:-bottom-40 sm:-left-40 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full filter blur-3xl animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full filter blur-3xl animate-pulse"></div>
       </div>
 
-      {/* Header */}
       <header className="relative z-10 p-8 pb-12">
-       <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
               <MessageCircleCode className="ri-chat-3-fill text-white text-2xl" />
@@ -106,11 +104,9 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Rooms Grid */}
       <div className="relative z-10 px-8 pb-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {/* Create New Room Card */}
             <div
               onClick={() => setIsModalOpen(true)}
               className="group relative bg-gradient-to-br from-blue-900/40 to-indigo-900/40 backdrop-blur-xl border border-blue-500/30 rounded-3xl p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25 transform hover:border-blue-400/50"
@@ -129,7 +125,6 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
             </div>
 
-            {/* Room Cards */}
             {room.map((roomItem) => (
               <div
                 key={roomItem._id}
@@ -141,7 +136,6 @@ const Home = () => {
                 className="group relative bg-gradient-to-br from-slate-900/60 to-zinc-900/60 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 transform hover:border-purple-500/50"
               >
                 <div className="flex flex-col h-full min-h-[200px]">
-                  {/* Room Header */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
                       <i className="ri-chat-3-fill text-white text-xl"></i>
@@ -154,12 +148,10 @@ const Home = () => {
                     </div>
                   </div>
 
-                  {/* Room Name */}
                   <h3 className="text-xl font-bold text-white mb-4 line-clamp-2 flex-grow">
                     {roomItem.name}
                   </h3>
 
-                  {/* Room Info */}
                   <div className="space-y-3 mt-auto">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -183,7 +175,6 @@ const Home = () => {
                       <span className="text-gray-400 text-sm">Just now</span>
                     </div>
 
-                    {/* Member Avatars */}
                     <div className="flex items-center gap-2 pt-2">
                       <span className="text-gray-400 text-xs">Team:</span>
                       <div className="flex -space-x-2">
@@ -209,7 +200,6 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Empty State */}
           {room.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-24 h-24 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center mb-8 shadow-2xl shadow-purple-500/25">
@@ -232,7 +222,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Create Room Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 w-full max-w-md shadow-2xl">

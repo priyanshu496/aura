@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../context/user.context";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "../config/axios";
 import {
   initializeSocket,
@@ -8,7 +8,6 @@ import {
   sendMessage,
 } from "../config/socket";
 import Markdown from "markdown-to-jsx";
-import hljs from "highlight.js";
 
 function SyntaxHighlightedCode(props) {
   const ref = useRef(null);
@@ -25,7 +24,6 @@ function SyntaxHighlightedCode(props) {
 
 const Room = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,6 +35,40 @@ const Room = () => {
 
   const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(true);
+
+  const saveMessageToDatabase = async (messageData) => {
+    try {
+      await axios.post("/messages/create", {
+        roomId: room._id,
+        content: messageData.message,
+      });
+    } catch (error) {
+      console.error("Error saving message to database:", error);
+    }
+  };
+
+  const loadMessagesFromDatabase = async () => {
+    try {
+      setLoadingMessages(true);
+      const response = await axios.get(`/messages/room/${room._id}`);
+
+      const transformedMessages = response.data.messages.map((msg) => ({
+        sender: {
+          _id: msg.sender._id,
+          email: msg.sender.email,
+        },
+        message: msg.content,
+        createdAt: msg.createdAt,
+      }));
+
+      setMessages(transformedMessages);
+    } catch (error) {
+      console.error("Error loading messages from database:", error);
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
 
   const handleUserClick = (id) => {
     setSelectedUserId((prevSelectedUserId) => {
@@ -66,16 +98,19 @@ const Room = () => {
       });
   }
 
-  const send = () => {
+  const send = async () => {
     if (message.trim()) {
-      sendMessage("room-message", {
-        message,
+      const messageData = {
+        message: message.trim(),
         sender: user,
-      });
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: user, message },
-      ]);
+      };
+
+      sendMessage("room-message", messageData);
+
+      setMessages((prevMessages) => [...prevMessages, messageData]);
+
+      await saveMessageToDatabase(messageData);
+
       setMessage("");
       scrollToBottom();
     }
@@ -124,9 +159,11 @@ const Room = () => {
   }
 
   useEffect(() => {
+    loadMessagesFromDatabase();
+
     initializeSocket(room._id);
 
-    receiveMessage("room-message", (data) => {
+    receiveMessage("room-message", async (data) => {
       console.log("Received message data:", data);
 
       if (data.sender._id == "auraAI") {
@@ -146,10 +183,33 @@ const Room = () => {
         }
 
         console.log("Parsed message:", messageData);
+
+        try {
+          await axios.post("/messages/create", {
+            roomId: room._id,
+            content: JSON.stringify(messageData),
+            sender: "auraAI",
+          });
+        } catch (error) {
+          console.error("Error saving AI message to database:", error);
+        }
+
         scrollToBottom();
         setMessages((prevMessages) => [...prevMessages, data]);
       } else {
-        setMessages((prevMessages) => [...prevMessages, data]);
+        if (data.sender._id !== user._id) {
+          setMessages((prevMessages) => [...prevMessages, data]);
+
+          try {
+            await axios.post("/messages/create", {
+              roomId: room._id,
+              content: data.message,
+              sender: data.sender._id,
+            });
+          } catch (error) {
+            console.error("Error saving received message to database:", error);
+          }
+        }
       }
     });
 
@@ -183,16 +243,13 @@ const Room = () => {
 
   return (
     <main className="h-screen w-screen flex bg-gradient-to-br from-slate-950 via-zinc-950 to-black relative overflow-hidden">
-      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -right-20 sm:-top-40 sm:-right-40 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full filter blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-20 -left-20 sm:-bottom-40 sm:-left-40 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full filter blur-3xl animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full filter blur-3xl animate-pulse"></div>
       </div>
 
-      {/* Main Chat Section */}
       <section className="relative flex flex-col h-screen w-full z-10">
-        {/* Header */}
         <header className="flex justify-between items-center p-6 px-8 w-full bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 shadow-2xl">
           <div className="flex items-center gap-5">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
@@ -224,13 +281,19 @@ const Room = () => {
           </div>
         </header>
 
-        {/* Chat Messages Area */}
         <div className="conversation-area flex-grow flex flex-col h-full relative overflow-hidden">
           <div
             ref={messageBox}
             className="message-box p-8 flex-grow flex flex-col gap-6 overflow-auto scrollbar-thin scrollbar-thumb-purple-600/50 scrollbar-track-transparent"
           >
-            {messages.length === 0 ? (
+            {loadingMessages ? (
+              <div className="flex-grow flex items-center justify-center">
+                <div className="text-center text-gray-400">
+                  <div className="w-12 h-12 border-4 border-zinc-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-lg font-medium">Loading messages...</p>
+                </div>
+              </div>
+            ) : messages.length === 0 ? (
               <div className="flex-grow flex items-center justify-center">
                 <div className="text-center text-gray-400">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center mx-auto mb-6">
@@ -276,7 +339,7 @@ const Room = () => {
                         {msg.sender._id === "auraAI"
                           ? "🤖"
                           : (msg.sender.email || msg.sender._id)
-                              .charAt(0)
+                              ?.charAt(0)
                               .toUpperCase()}
                       </div>
                       <div className="flex flex-col">
@@ -302,10 +365,15 @@ const Room = () => {
                               : "text-gray-400"
                           }`}
                         >
-                          {new Date().toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {msg.createdAt
+                            ? new Date(msg.createdAt).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : new Date().toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                         </small>
                       </div>
                     </div>
@@ -313,7 +381,7 @@ const Room = () => {
                       className={`text-base leading-relaxed font-medium ${
                         msg.sender._id === "auraAI"
                           ? "text-gray-100"
-                          : msg.sender._id == user._id.toString()
+                          : msg.sender._id == user?._id?.toString()
                           ? "text-white"
                           : "text-gray-200"
                       }`}
@@ -330,11 +398,9 @@ const Room = () => {
             )}
           </div>
 
-          {/* Message Input */}
           <div className="input-area p-8 bg-slate-900/60 backdrop-blur-xl border-t border-slate-700/50">
             <div className="flex items-center gap-6 bg-slate-800/60 backdrop-blur-sm rounded-3xl p-3 shadow-2xl border border-slate-600/30">
-              <div className="flex items-center gap-4">
-              </div>
+              <div className="flex items-center gap-4"></div>
               <input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -354,7 +420,6 @@ const Room = () => {
           </div>
         </div>
 
-        {/* Side Panel */}
         <div
           className={`side-panel w-96 h-full flex flex-col bg-slate-900/90 backdrop-blur-xl border-l border-slate-700/50 absolute transition-all duration-500 ease-in-out ${
             isSidePanelOpen ? "translate-x-0" : "translate-x-full"
@@ -394,7 +459,6 @@ const Room = () => {
         </div>
       </section>
 
-      {/* Add Member Modal */}
       {isModalOpen && (
         <div className="add-section fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-slate-900/90 backdrop-blur-xl p-8 rounded-3xl w-[500px] max-w-full relative shadow-2xl border border-slate-700/50">
@@ -423,7 +487,7 @@ const Room = () => {
                     onClick={() => handleUserClick(user._id)}
                   >
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/25">
-                      {user.email.charAt(0).toUpperCase()}
+                      {user?.email?.charAt(0).toUpperCase()}
                     </div>
                     <h1 className="font-bold text-white text-lg flex-grow">
                       {user.email}

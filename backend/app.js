@@ -4,6 +4,7 @@ import connect from './db/db.js';
 import userRoutes from './routes/user.routes.js';
 import roomRoutes from './routes/room.routes.js';
 import aiRoutes from './routes/ai.routes.js';
+import messageRoutes from './routes/message.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 connect();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use('/user', userRoutes);
 app.use('/rooms', roomRoutes);
 app.use("/ai", aiRoutes)
+app.use("/messages", messageRoutes)
 
 
 

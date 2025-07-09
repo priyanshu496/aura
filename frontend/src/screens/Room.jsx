@@ -241,6 +241,18 @@ const Room = () => {
     }, 100);
   }
 
+  // Early return if user context is not available
+  if (!user) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-zinc-950 to-black">
+        <div className="text-center text-gray-400">
+          <div className="w-12 h-12 border-4 border-zinc-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="h-screen w-screen flex bg-gradient-to-br from-slate-950 via-zinc-950 to-black relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
@@ -312,16 +324,16 @@ const Room = () => {
                 <div
                   key={index}
                   className={`message-wrapper ${
-                    msg.sender._id == user._id.toString()
+                    msg.sender?._id === user?._id?.toString()
                       ? "ml-auto"
                       : "mr-auto"
                   } max-w-4xl`}
                 >
                   <div
                     className={`message flex flex-col p-6 rounded-3xl shadow-2xl backdrop-blur-sm transform transition-all duration-300 hover:scale-[1.02] ${
-                      msg.sender._id === "auraAI"
+                      msg.sender?._id === "auraAI"
                         ? "bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 shadow-purple-500/20"
-                        : msg.sender._id == user._id.toString()
+                        : msg.sender?._id === user?._id?.toString()
                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white border border-blue-400/30 shadow-blue-500/20"
                         : "bg-gradient-to-r from-blue-700 to-indigo-500 border border-slate-600/30 shadow-slate-500/20"
                     }`}
@@ -329,38 +341,38 @@ const Room = () => {
                     <div className="flex items-center gap-4 mb-4">
                       <div
                         className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-bold shadow-lg ${
-                          msg.sender._id === "auraAI"
+                          msg.sender?._id === "auraAI"
                             ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-purple-500/25"
-                            : msg.sender._id == user._id.toString()
+                            : msg.sender?._id === user?._id?.toString()
                             ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-blue-500/25"
                             : "bg-gradient-to-r from-pink-500 via-black to-blue-500 text-white shadow-slate-500/25"
                         }`}
                       >
-                        {msg.sender._id === "auraAI"
+                        {msg.sender?._id === "auraAI"
                           ? "🤖"
-                          : (msg.sender.email || msg.sender._id)
+                          : (msg.sender?.email || msg.sender?._id)
                               ?.charAt(0)
                               .toUpperCase()}
                       </div>
                       <div className="flex flex-col">
                         <small
                           className={`text-sm font-bold ${
-                            msg.sender._id === "auraAI"
+                            msg.sender?._id === "auraAI"
                               ? "text-purple-300"
-                              : msg.sender._id == user._id.toString()
+                              : msg.sender?._id === user?._id?.toString()
                               ? "text-blue-100"
                               : "text-gray-300"
                           }`}
                         >
-                          {msg.sender._id === "auraAI"
+                          {msg.sender?._id === "auraAI"
                             ? "Aura AI"
-                            : msg.sender.email || msg.sender._id}
+                            : msg.sender?.email || msg.sender?._id}
                         </small>
                         <small
                           className={`text-xs opacity-75 font-medium ${
-                            msg.sender._id === "auraAI"
+                            msg.sender?._id === "auraAI"
                               ? "text-purple-400"
-                              : msg.sender._id == user._id.toString()
+                              : msg.sender?._id === user?._id?.toString()
                               ? "text-blue-200"
                               : "text-gray-400"
                           }`}
@@ -379,14 +391,14 @@ const Room = () => {
                     </div>
                     <div
                       className={`text-base leading-relaxed font-medium ${
-                        msg.sender._id === "auraAI"
+                        msg.sender?._id === "auraAI"
                           ? "text-gray-100"
-                          : msg.sender._id == user?._id?.toString()
+                          : msg.sender?._id === user?._id?.toString()
                           ? "text-white"
                           : "text-gray-200"
                       }`}
                     >
-                      {msg.sender._id === "auraAI" ? (
+                      {msg.sender?._id === "auraAI" ? (
                         WriteAiMessage(msg.message)
                       ) : (
                         <p className="break-words">{msg.message}</p>
@@ -476,23 +488,23 @@ const Room = () => {
             <div className="users-list flex flex-col gap-3 mb-8 max-h-96 overflow-scroll">
               {users
                 .filter((u) => !room.users?.find((ru) => ru._id === u._id))
-                .map((user) => (
+                .map((userItem) => (
                   <div
-                    key={user._id}
+                    key={userItem._id}
                     className={`user cursor-pointer hover:bg-slate-800/60 ${
-                      selectedUserId.has(user._id)
+                      selectedUserId.has(userItem._id)
                         ? "bg-slate-800/80 ring-2 ring-purple-500/50 border-purple-500/30"
                         : "border-slate-700/30"
                     } p-4 rounded-2xl flex gap-4 items-center transition-all duration-300 transform hover:scale-105 border`}
-                    onClick={() => handleUserClick(user._id)}
+                    onClick={() => handleUserClick(userItem._id)}
                   >
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/25">
-                      {user?.email?.charAt(0).toUpperCase()}
+                      {userItem?.email?.charAt(0).toUpperCase()}
                     </div>
                     <h1 className="font-bold text-white text-lg flex-grow">
-                      {user.email}
+                      {userItem.email}
                     </h1>
-                    {selectedUserId.has(user._id) && (
+                    {selectedUserId.has(userItem._id) && (
                       <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                         <i className="ri-check-fill text-white"></i>
                       </div>

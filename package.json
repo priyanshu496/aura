@@ -1,0 +1,22 @@
+{
+  "name": "aura",
+  "version": "1.0.0",
+  "description": "Aura is a full-stack real-time anonymous chat application built with the MERN stack, Socket.IO, and Gemini AI. Users can create or join chat rooms, chat instantly with others, and interact with Aura, an AI companion that can answer any query.",
+  "main": "server.js",
+  "scripts": {
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm run start --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priyanshu496/aura.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/priyanshu496/aura/issues"
+  },
+  "homepage": "https://github.com/priyanshu496/aura#readme"
+}

@@ -96,5 +96,5 @@ Start the frontend
 [![6.png](https://i.postimg.cc/Vv1Lbftv/6.png)](https://postimg.cc/LYCMcMNF)
 ## Author
 
-- [@PriyanshuB](https://github.com/priyanshu496)
+- [@Priyanshu496](https://github.com/priyanshu496)
 
